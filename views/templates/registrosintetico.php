@@ -1,16 +1,3 @@
-<style>
-table {
-    table-layout: fixed;
-    width: 100%;
-}
-
-th, td {
-    width: calc(100% / 12); /* Divide o espaço igualmente entre 12 meses */
-    text-align: center;
-}
-
-
-</style>
 <div class="filters">
   <!-- Filtro por Tipo -->
   <label for="tipo">Tipo:</label>
@@ -44,22 +31,6 @@ th, td {
         }
     ?>
   </select>
-    <!-- Filtro por Subsetor -->
-    <label for="subsetor">Subsetor:</label>
-    <select id="subsetor" class="filter">
-        <option value="">Todos</option>
-        <?php
-            $subsetores = array_unique(array_column($registros, 'subsetor'));
-            sort($subsetores);
-            foreach ($subsetores as $subsetor) {
-                if (!empty($subsetor)) {
-                    $subsetor = htmlspecialchars($subsetor);
-                    echo "<option value=\"$subsetor\">$subsetor</option>";
-                }
-            }
-        ?>
-    </select>
-
 
   <!-- Filtro por Produto -->
   <label for="produto">Produto:</label>
@@ -100,43 +71,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const dataFimFilter = document.getElementById('dataFim');
     const resultadosContainer = document.getElementById('resultados');
     const registros = <?php echo json_encode($registros); ?>;
-    const subsetorFilter = document.getElementById('subsetor');
-    // Função para definir a data de início automaticamente
-    function definirDataInicio() {
-        const dataAtual = new Date();
-        const mesAtual = dataAtual.getMonth(); // Mês atual (0 - Janeiro, 1 - Fevereiro, ..., 11 - Dezembro)
-        const anoAtual = dataAtual.getFullYear();
-
-        let mesInicio = mesAtual - 2; // Subtrai 2 meses para obter 3 meses atrás (margem de 3 meses)
-
-        if (mesInicio < 0) {
-            // Se o mês inicial for negativo (antes de janeiro), ajusta para o ano anterior
-            mesInicio += 12;
-        }
-
-        // Define o primeiro dia do mês calculado
-        const dataInicio = new Date(anoAtual, mesInicio, 1);
-        
-        // Formatar data no formato YYYY-MM-DD (compatível com o input date)
-        const dataInicioFormatada = dataInicio.toISOString().split('T')[0];
-        
-        // Atribui a data de início ao campo de data
-        dataInicioFilter.value = dataInicioFormatada;
-    }
-
-    // Chama a função para definir a data de início automaticamente
-    definirDataInicio();
-
 
     function calcularCustoTotal() {
         const setorSelecionado = setorFilter.value;
         const produtoSelecionado = produtoFilter.value;
         const tipoSelecionado = tipoFilter.value;
-        const subsetorSelecionado = subsetorFilter.value;
-
         let dataInicio = dataInicioFilter.value;
         let dataFim = dataFimFilter.value;
-
 
         if (dataInicio) {
             dataInicio = new Date(dataInicio);
@@ -157,7 +98,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 const nomeSetor = registro.setor === '' || registro.setor === null ? 'Ajuste Negativo' : registro.setor;
                 
                 if ((!setorSelecionado || nomeSetor === setorSelecionado) &&
-                    (!subsetorSelecionado || registro.subsetor === subsetorSelecionado) &&
                     (!produtoSelecionado || registro.nome_produto === produtoSelecionado) &&
                     (!tipoSelecionado || registro.tipo === tipoSelecionado)) {
                     const mesAno = `${dataRegistro.getFullYear()}-${String(dataRegistro.getMonth() + 1).padStart(2, '0')}`;
@@ -173,129 +113,98 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function exibirTabelaPorMes(registrosPorMes) {
-    resultadosContainer.innerHTML = '';
+        resultadosContainer.innerHTML = '';
 
-    if (Object.keys(registrosPorMes).length === 0) {
-        resultadosContainer.innerHTML = '<p>Nenhum registro encontrado com os filtros selecionados.</p>';
-        return;
-    }
+        if (Object.keys(registrosPorMes).length === 0) {
+            resultadosContainer.innerHTML = '<p>Nenhum registro encontrado com os filtros selecionados.</p>';
+            return;
+        }
 
-    // Criar a tabela de uma única vez
-    const tabela = document.createElement('table');
-    tabela.style.width = '100%';
-    tabela.style.borderCollapse = 'collapse';
-    tabela.border = '1';
+        for (const mesAno in registrosPorMes) {
+            const [ano, mes] = mesAno.split('-');
+            const nomeMes = new Date(ano, mes - 1).toLocaleString('pt-BR', { month: 'long' });
 
-    const thead = document.createElement('thead');
-    const trHead = document.createElement('tr');
+            const tabela = document.createElement('table');
+            tabela.style.width = '100%';
+            tabela.style.borderCollapse = 'collapse';
+            tabela.border = '1';
 
-    // Colunas fixas
-    const thSetor = document.createElement('th');
-    thSetor.innerText = 'Setor';
-    trHead.appendChild(thSetor);
+            const thead = document.createElement('thead');
+            const trHead = document.createElement('tr');
+            const thSetor = document.createElement('th');
+            thSetor.innerText = 'Setor';
+            const thItensTotal = document.createElement('th');
+            thItensTotal.innerText = 'Itens Total';
+            const thCustoTotal = document.createElement('th');
+            thCustoTotal.innerText = 'Custo Total';
+            trHead.appendChild(thSetor);
+            trHead.appendChild(thItensTotal);
+            trHead.appendChild(thCustoTotal);
+            thead.appendChild(trHead);
+            tabela.appendChild(thead);
 
-    // Adiciona as colunas para cada mês
-    const meses = Object.keys(registrosPorMes).sort();
-    meses.forEach((mesAno) => {
-        const [ano, mes] = mesAno.split('-');
-        const nomeMes = new Date(ano, mes - 1).toLocaleString('pt-BR', { month: 'long' });
-        const thItensTotal = document.createElement('th');
-        thItensTotal.innerText = `Itens Total ${nomeMes}`;
-        trHead.appendChild(thItensTotal);
-        
-        const thCustoTotal = document.createElement('th');
-        thCustoTotal.innerText = `Custo Total ${nomeMes}`;
-        trHead.appendChild(thCustoTotal);
-    });
+            const tbody = document.createElement('tbody');
+            const setoresTotais = {};
+            const itensTotalPorSetor = {};
+            let custoTotalGeral = 0;
 
-    thead.appendChild(trHead);
-    tabela.appendChild(thead);
+            registrosPorMes[mesAno].forEach(function(registro) {
+                const nomeSetor = registro.setor === '' || registro.setor === null ? 'Ajuste Negativo' : registro.setor;
+                const custoTotal = parseFloat(registro.custo) * parseFloat(registro.quantidade);
+                const quantidadeItens = parseFloat(registro.quantidade);
 
-    const tbody = document.createElement('tbody');
-    const setoresTotais = {};
-    const itensTotalPorSetor = {};
-    let custoTotalGeral = 0;
+                if (setoresTotais[nomeSetor]) {
+                    setoresTotais[nomeSetor] += custoTotal;
+                    itensTotalPorSetor[nomeSetor] += quantidadeItens;
+                } else {
+                    setoresTotais[nomeSetor] = custoTotal;
+                    itensTotalPorSetor[nomeSetor] = quantidadeItens;
+                }
 
-    // Agrupar dados por setor e mês
-    meses.forEach((mesAno) => {
-        registrosPorMes[mesAno].forEach(function(registro) {
-            const nomeSetor = registro.setor === '' || registro.setor === null ? 'Ajuste Negativo' : registro.setor;
-            const custoTotal = parseFloat(registro.custo) * parseFloat(registro.quantidade);
-            const quantidadeItens = parseFloat(registro.quantidade);
+                custoTotalGeral += custoTotal;
+            });
 
-            if (setoresTotais[nomeSetor]) {
-                setoresTotais[nomeSetor] += custoTotal;
-                itensTotalPorSetor[nomeSetor] += quantidadeItens;
-            } else {
-                setoresTotais[nomeSetor] = custoTotal;
-                itensTotalPorSetor[nomeSetor] = quantidadeItens;
+            for (const setor in setoresTotais) {
+                const tr = document.createElement('tr');
+                const tdSetor = document.createElement('td');
+                tdSetor.innerText = setor;
+                const tdItensTotal = document.createElement('td');
+                tdItensTotal.innerText = itensTotalPorSetor[setor].toFixed(2).replace('.', ',');
+                const tdCustoTotal = document.createElement('td');
+                tdCustoTotal.innerText = setoresTotais[setor].toFixed(2).replace('.', ',');
+                tr.appendChild(tdSetor);
+                tr.appendChild(tdItensTotal);
+                tr.appendChild(tdCustoTotal);
+                tbody.appendChild(tr);
             }
 
-            custoTotalGeral += custoTotal;
-        });
-    });
+            const trTotalGeral = document.createElement('tr');
+            const tdTotalSetor = document.createElement('td');
+            tdTotalSetor.innerText = 'Total Geral';
+            const tdTotalItens = document.createElement('td');
+            tdTotalItens.innerText = Object.values(itensTotalPorSetor).reduce((a, b) => a + b, 0).toFixed(2).replace('.', ',');
+            const tdTotalValor = document.createElement('td');
+            tdTotalValor.innerText = custoTotalGeral.toFixed(2).replace('.', ',');
+            trTotalGeral.appendChild(tdTotalSetor);
+            trTotalGeral.appendChild(tdTotalItens);
+            trTotalGeral.appendChild(tdTotalValor);
+            tbody.appendChild(trTotalGeral);
+            trTotalGeral.style.backgroundColor = '#f2f2f2';
 
-    // Criar as linhas para cada setor
-    Object.keys(setoresTotais).forEach((setor) => {
-        const tr = document.createElement('tr');
-        
-        const tdSetor = document.createElement('td');
-        tdSetor.innerText = setor;
-        tr.appendChild(tdSetor);
+            tabela.appendChild(tbody);
 
-        meses.forEach((mesAno) => {
-            const custoTotal = setoresTotais[setor] || 0;
-            const itensTotal = itensTotalPorSetor[setor] || 0;
-
-            const tdItensTotal = document.createElement('td');
-            tdItensTotal.innerText = itensTotal.toFixed(2).replace('.', ',');
-
-            const tdCustoTotal = document.createElement('td');
-            tdCustoTotal.innerText = custoTotal.toFixed(2).replace('.', ',');
-
-            tr.appendChild(tdItensTotal);
-            tr.appendChild(tdCustoTotal);
-        });
-
-        tbody.appendChild(tr);
-    });
-
-    // Adiciona uma linha total
-    const trTotalGeral = document.createElement('tr');
-    const tdTotalSetor = document.createElement('td');
-    tdTotalSetor.innerText = 'Total Geral';
-    trTotalGeral.appendChild(tdTotalSetor);
-
-    meses.forEach((mesAno) => {
-        const totalItens = Object.values(itensTotalPorSetor).reduce((a, b) => a + b, 0);
-        const totalCusto = Object.values(setoresTotais).reduce((a, b) => a + b, 0);
-
-        const tdTotalItens = document.createElement('td');
-        tdTotalItens.innerText = totalItens.toFixed(2).replace('.', ',');
-
-        const tdTotalValor = document.createElement('td');
-        tdTotalValor.innerText = totalCusto.toFixed(2).replace('.', ',');
-
-        trTotalGeral.appendChild(tdTotalItens);
-        trTotalGeral.appendChild(tdTotalValor);
-    });
-
-    tbody.appendChild(trTotalGeral);
-    trTotalGeral.style.backgroundColor = '#f2f2f2';
-
-    tabela.appendChild(tbody);
-
-    resultadosContainer.appendChild(tabela);
-}
-
+            const tituloMes = document.createElement('h2');
+            tituloMes.innerText = `Relatório de ${nomeMes} de ${ano}`;
+            resultadosContainer.appendChild(tituloMes);
+            resultadosContainer.appendChild(tabela);
+        }
+    }
 
     setorFilter.addEventListener('change', calcularCustoTotal);
     produtoFilter.addEventListener('change', calcularCustoTotal);
     tipoFilter.addEventListener('change', calcularCustoTotal);
     dataInicioFilter.addEventListener('change', calcularCustoTotal);
     dataFimFilter.addEventListener('change', calcularCustoTotal);
-    subsetorFilter.addEventListener('change', calcularCustoTotal);
-
 
     calcularCustoTotal();
 

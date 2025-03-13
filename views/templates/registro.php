@@ -155,10 +155,10 @@
                 ?>
                 <div class="card" data-setor="<?php echo $setor; ?>" data-subSetor="<?php echo $subSetor; ?>" data-data="<?php echo $data_para_comparacao; ?>" data-custo="<?php echo $custo; ?>">
                     <p><strong>TIPO:</strong> <?php echo $tipo; ?></p>
-                    <p><strong>Código Registro:</strong> <?php echo $id_registro; ?></p>
+                    <input type="hidden" name="id_registro" value="<?php echo $id_registro; ?>">
                     <p><strong>Código Solicitação:</strong> <?php echo $id_solicitacao; ?></p>
-                    <p><strong>Código Produto:</strong> <?php echo $id_produto; ?></p>
-                    <p><strong>Produto:</strong> <?php echo $prod; ?></p>
+                    <p><strong>Código do item:</strong> <?php echo $id_produto; ?></p>
+                    <p><strong>Descrição do item:</strong> <?php echo $prod; ?></p>
                     <p class="quantidade"><strong>Quantidade:</strong> <?php echo $quantidade; ?></p>
                     <p><strong>Setor:</strong> <?php echo $setor; ?></p>
                     <p><strong>Subsetor:</strong> <?php echo $subSetor; ?></p>
@@ -166,20 +166,20 @@
                     <p><strong>Data Registro:</strong> <?php echo $data_formatada; ?></p>
                     <p><strong>Realizado por:</strong> <?php echo $usuario; ?></p>
 
-                <!-- Formulário para envio do ID Registro com o botão de devolução -->
-                <?php if (strtolower($tipo) == 'solicitação'): ?>
-                <!-- Formulário para envio do ID Registro com o botão de devolução -->
-                <form action="<?php echo $base_url; ?>Registro/mveditar" method="POST">
-                    <input type="hidden" name="id_registro" value="<?php echo $id_registro; ?>">
-                    <button type="button" class="btn-devolucao"
-                            data-id-registro="<?php echo $id_registro; ?>"
-                            data-quantidade="<?php echo $quantidade; ?>"
-                            data-id-produto="<?php echo $id_produto; ?>"
-                            data-id-solicitacao="<?php echo $id_solicitacao; ?>">
-                        Devolução
-                    </button>
-                </form>
-                <?php endif; ?>
+                    <!-- Formulário para envio do ID Registro com o botão de devolução -->
+                    <?php if (strtolower($tipo) == 'solicitação'): ?>
+                    <!-- Formulário para envio do ID Registro com o botão de devolução -->
+                    <form action="<?php echo $base_url; ?>Registro/mveditar" method="POST">
+                        <input type="hidden" name="id_registro" value="<?php echo $id_registro; ?>">
+                        <button type="button" class="btn-devolucao"
+                                data-id-registro="<?php echo $id_registro; ?>"
+                                data-quantidade="<?php echo $quantidade; ?>"
+                                data-id-produto="<?php echo $id_produto; ?>"
+                                data-id-solicitacao="<?php echo $id_solicitacao; ?>">
+                            Devolução
+                        </button>
+                    </form>
+                    <?php endif; ?>
 
                 </div>
             <?php endforeach; ?>

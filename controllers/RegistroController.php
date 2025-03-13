@@ -131,7 +131,14 @@
             $numero_nota = null;
             $custo = null;
             $saldo_final = $saldo + $quantidade;
-            $this->model->novoregistro($tipo, $quantidade, $id, $id_solicitacao, $numero_nota, $custo, $saldo_final);
+
+            $data = isset($postData['data']) && !empty($postData['data']) 
+            ? $postData['data'] 
+            : date('Y-m-d H:i:s');
+
+
+
+            $this->model->novoregistro($tipo, $quantidade, $id, $id_solicitacao, $numero_nota, $custo, $saldo_final,$data);
 
             $_SESSION['mensagem_confirmacao'] = "Registro(s) de devolução efetuado com sucesso";
             header('Location:'. $this->base_url.'Registro/entrada');

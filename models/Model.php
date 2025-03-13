@@ -18,7 +18,7 @@ class Model
 
     private function connect() {
         $host = 'localhost'; // Nome do host MySQL fornecido
-        $dbName = 'ccbj_idm'; // Nome do banco de dados fornecido
+        $dbName = 'ccbj_estoque'; // Nome do banco de dados fornecido
         $username = 'root'; // Nome do usuário MySQL fornecido
         $password = ''; // Senha MySQL fornecida
 

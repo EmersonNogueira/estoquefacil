@@ -6,7 +6,7 @@
         <input type="hidden" name="id" value="<?php echo htmlspecialchars($produto['id_produto']); ?>">
 
         <div class="form-group">
-            <label for="nome">Nome:</label>
+            <label for="nome">Descrição do item:</label>
             <input type="text" id="nome" name="nome" value="<?php echo htmlspecialchars($produto['nome']); ?>" required>
         </div>
         <div class="form-group">

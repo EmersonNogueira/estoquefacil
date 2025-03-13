@@ -66,10 +66,10 @@
                      data-quantidade="<?php echo $quantidade; ?>"
                      data-id-solicitacao="<?php echo $id_solicitacao; ?>">
                     <h2 style="text-align: center;"><?php echo $tipo; ?></h2>
-                    <p><strong>Código Registro:</strong> <?php echo $id_registro; ?></p>
+                    <input type="hidden" name="id_registro" value="<?php echo $id_registro; ?>">
                     <p><strong>Código Solicitação:</strong> <?php echo $id_solicitacao; ?></p>
-                    <p><strong>Código Produto:</strong> <?php echo $id_produto; ?></p>
-                    <p><strong>Produto:</strong> <?php echo $prod; ?></p>
+                    <p><strong>Código do item:</strong> <?php echo $id_produto; ?></p>
+                    <p><strong>Descrição do item:</strong> <?php echo $prod; ?></p>
                     <p><strong>Quantidade:</strong> <?php echo $quantidade; ?></p>
                     <p><strong>Número da Nota:</strong> <?php echo $numero_nota; ?></p>
                     <p><strong>Custo:</strong> R$ <?php echo $custo; ?></p>

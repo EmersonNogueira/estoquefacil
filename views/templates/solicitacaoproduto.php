@@ -278,39 +278,39 @@
 
     // Subsetores de acordo com o setor selecionado
     const subsetores = {
-        escola: [
+        Escola: [
             { value: 'Geral', text: 'Geral' },
-            { value: 'Programa de acessibilidade', text: 'Programa de Acessibilidade' },
+            { value: 'Programa de Acessibilidade', text: 'Programa de Acessibilidade' },
             { value: 'Programa de Audiovisual', text: 'Programa de Audiovisual' },
-            { value: 'Programa de culturadigital', text: 'Programa de Cultura Digital' },
-            { value: 'Programa de dança', text: 'Programa de Dança' },
-            { value: 'Programa de música', text: 'Programa de Música' },
-            { value: 'Programa de teatro', text: 'Programa de Teatro' }
+            { value: 'Programa de Cultura Digital', text: 'Programa de Cultura Digital' },
+            { value: 'Programa de Dança', text: 'Programa de Dança' },
+            { value: 'Programa de Música', text: 'Programa de Música' },
+            { value: 'Programa de Teatro', text: 'Programa de Teatro' }
         ],
-        acaocultural: [
+        "Ação Cultural": [
             { value: 'Geral', text: 'Geral' },
             { value: 'Biblioteca', text: 'Biblioteca' },
             { value: 'Estúdio', text: 'Estúdio' },
             { value: 'Teatro', text: 'Teatro' }
         ],
-        comunicacao: [
-            { value: 'geral', text: 'Geral' }
+        Comunicação: [
+            { value: 'Geral', text: 'Geral' }
         ],
-        narte: [
+        Narte: [
             { value: 'Geral', text: 'Geral' },
             { value: 'Psicosocial', text: 'Psicosocial' },
             { value: 'Educadores', text: 'Educadores' },
         ],
-        infraestrutura: [
+        Infraestrutura: [
             { value: 'Geral', text: 'Geral' },
             { value: 'TI', text: 'TI' },
             { value: 'Manutenção', text: 'Manutenção' }
         ],
-        gestao: [
+        Gestão: [
             { value: 'Geral', text: 'Geral' }
         ],
 
-        administrativo: [
+        Administrativo: [
             { value: 'Geral', text: 'Geral' }
         ]
     };
